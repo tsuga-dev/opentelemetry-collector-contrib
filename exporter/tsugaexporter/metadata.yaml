@@ -1,0 +1,16 @@
+type: tsuga
+display_name: Tsuga Exporter
+
+status:
+  class: exporter
+  stability:
+    development: [traces, metrics, logs]
+  distributions: [contrib]
+  codeowners:
+    active: []
+
+tests:
+  config:
+    cluster_id: "test-cluster"
+    api_key: "test-api-key"
+  expect_consumer_error: true
