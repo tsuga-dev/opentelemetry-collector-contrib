@@ -44,13 +44,10 @@ func createDefaultConfig() component.Config {
 func buildOTLPConfig(cfg *Config) *otlphttpexporter.Config {
 	otlpCfg := otlpHTTPFactory.CreateDefaultConfig().(*otlphttpexporter.Config)
 
-	endpoint := cfg.endpoint()
-
-	// Override all signal endpoints to the same URL so the upstream exporter
-	// does not append /v1/traces, /v1/metrics, /v1/logs suffixes.
-	otlpCfg.TracesEndpoint = endpoint
-	otlpCfg.MetricsEndpoint = endpoint
-	otlpCfg.LogsEndpoint = endpoint
+	// Set the base endpoint; otlphttpexporter appends /v1/traces, /v1/metrics,
+	// /v1/logs automatically when ClientConfig.Endpoint is used instead of the
+	// per-signal endpoint fields.
+	otlpCfg.ClientConfig.Endpoint = cfg.endpoint()
 
 	// Inject bearer token auth using configopaque.MapList.Set
 	otlpCfg.ClientConfig.Headers.Set(

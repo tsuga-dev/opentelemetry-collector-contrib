@@ -42,9 +42,11 @@ func TestBuildOTLPConfig(t *testing.T) {
 	otlpCfg := buildOTLPConfig(cfg)
 
 	expectedEndpoint := "https://intake.my-cluster.tsuga.com/api/v1/otlp"
-	assert.Equal(t, expectedEndpoint, otlpCfg.TracesEndpoint)
-	assert.Equal(t, expectedEndpoint, otlpCfg.MetricsEndpoint)
-	assert.Equal(t, expectedEndpoint, otlpCfg.LogsEndpoint)
+	assert.Equal(t, expectedEndpoint, otlpCfg.ClientConfig.Endpoint)
+	// Per-signal endpoints must be empty so otlphttpexporter appends /v1/traces etc.
+	assert.Empty(t, otlpCfg.TracesEndpoint)
+	assert.Empty(t, otlpCfg.MetricsEndpoint)
+	assert.Empty(t, otlpCfg.LogsEndpoint)
 	assert.Equal(t, 15*time.Second, otlpCfg.ClientConfig.Timeout)
 
 	// Headers is configopaque.MapList with Get(name string) (val String, ok bool)
